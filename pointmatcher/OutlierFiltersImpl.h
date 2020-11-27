@@ -144,6 +144,26 @@ struct OutlierFiltersImpl
 		virtual OutlierWeights compute(const DataPoints& filteredReading, const DataPoints& filteredReference, const Matches& input);
 	};
 
+
+
+        struct SemanticOutlierFilter: public OutlierFilter
+        {
+                inline static const std::string description()
+                {
+                        return "Filters pair matches: makes sure that pair matches have identical semantic labels, and sets the weights";
+                }
+                inline static const ParametersDoc availableParameters()
+                {
+                        return {
+                                {"ratio", "percentage to keep", "0.85", "0.0000001", "1.0", &P::Comp<T>}
+                        };
+                }
+
+                SemanticOutlierFilter(const Parameters& params = Parameters());
+                virtual OutlierWeights compute(const DataPoints& filteredReading, const DataPoints& filteredReference, const Matches& input);
+        };
+
+
 	struct VarTrimmedDistOutlierFilter: public OutlierFilter
 	{
 		inline static const std::string description()
