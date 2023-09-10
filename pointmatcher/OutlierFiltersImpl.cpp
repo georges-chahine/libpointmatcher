@@ -149,6 +149,60 @@ typename PointMatcher<T>::OutlierWeights OutlierFiltersImpl<T>::TrimmedDistOutli
 template struct OutlierFiltersImpl<float>::TrimmedDistOutlierFilter;
 template struct OutlierFiltersImpl<double>::TrimmedDistOutlierFilter;
 
+// SemanticOutlierFilter
+template<typename T>
+OutlierFiltersImpl<T>::SemanticOutlierFilter::SemanticOutlierFilter(const Parameters& params):
+    OutlierFilter("SemanticOutlierFilter", SemanticOutlierFilter::availableParameters(), params)
+{
+}
+
+template<typename T>
+typename PointMatcher<T>::OutlierWeights OutlierFiltersImpl<T>::SemanticOutlierFilter::compute(
+        const DataPoints& filteredReading,
+        const DataPoints& filteredReference,
+        const Matches& input)
+{
+    const BOOST_AUTO(semanticsReading, filteredReading.getDescriptorViewByName("semantics"));
+    const BOOST_AUTO(semanticsReference, filteredReference.getDescriptorViewByName("semantics"));
+
+    const BOOST_AUTO(semanticsWeightsReading, filteredReading.getDescriptorViewByName("semanticWeights"));
+
+    OutlierWeights w(input.dists.rows(), input.dists.cols());
+
+    for (int x = 0; x < w.cols(); ++x){ // pts in reading
+        const Vector semanticRead = semanticsReading.col(x);
+        const Vector semanticWeightRead = semanticsWeightsReading.col(x);
+
+        for (int y = 0; y < w.rows(); ++y) // knn
+        {
+            const int idRef = input.ids(y, x);
+
+            if (idRef == MatchersImpl<T>::NNS::InvalidIndex) {
+                w(y, x) = 0;
+                continue;
+            }
+
+            const Vector semanticRef = semanticsReference.col(idRef);
+
+            if (semanticRead==semanticRef){
+                w(y, x) = semanticWeightRead(0,0);
+              //  std::cout<<"weight is "<< w(y, x)<<" semanticRead is "<<semanticRead<<" semanticRef is "<<semanticRef<<std::endl;
+            }
+            else
+            {
+                     //      std::cout<<"BAD "<<std::endl;
+                w(y, x) = 0;
+            }
+        }
+
+    }
+
+    return w;
+}
+
+template struct OutlierFiltersImpl<float>::SemanticOutlierFilter;
+template struct OutlierFiltersImpl<double>::SemanticOutlierFilter;
+
 // VarTrimmedDistOutlierFilter
 template<typename T>
 OutlierFiltersImpl<T>::VarTrimmedDistOutlierFilter::VarTrimmedDistOutlierFilter(const Parameters& params):
