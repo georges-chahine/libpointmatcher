@@ -1,11 +1,8 @@
-| [Tutorials Home](index.md) | [Previous](PointClouds.md) | [Next](Transformations.md) |
-| :--- | :---: | ---: |
-
 # Writing a program which performs ICP
 
 ## Overview
 
-The following tutorial will go through the various steps that are performed in a basic ICP registration example.  The source code associated with this tutorial can be found in [examples/icp_simple.cpp](https://github.com/ethz-asl/libpointmatcher/blob/master/examples/icp_simple.cpp).
+The following tutorial will go through the various steps that are performed in a basic ICP registration example.  The source code associated with this tutorial can be found in [examples/icp_simple.cpp](https://github.com/norlab-ulaval/libpointmatcher/blob/master/examples/icp_simple.cpp).
 
 Point cloud registration is a critical step in 3D reconstruction of objects and terrains and is used in such varied fields as robotics, medicine, and geography. 
 
@@ -30,6 +27,7 @@ The program contained in `icp_simple.cpp` performs registration between point cl
 
 The `validateArgs` function is used to ensure that exactly two arguments are supplied: the paths to the reference and reader clouds.  Note that the first argument specifies the reference and the second the reader.
 
+=== "C++"
 ```cpp
 void validateArgs(int argc, char *argv[], bool& isCSV )
 {
@@ -48,6 +46,7 @@ void validateArgs(int argc, char *argv[], bool& isCSV )
 
 The following three lines simply rename types that are used in the program into something more convenient.  The `PointMatcher` base class contains all the relevant objects and functions that are used in the ICP process.  The `DataPoints` class represents a point cloud.
 
+=== "C++"
 ```cpp
 typedef PointMatcher<float> PM;
 typedef PM::DataPoints DP;
@@ -56,6 +55,7 @@ typedef PM::Parameters Parameters;
 
 We now read the reference and reader from csv files by using the `load` function, which outputs a `DataPoints` object.
 
+=== "C++"
 ```cpp
 // Load point clouds
 const DP ref(DP::load(argv[1]));
@@ -64,6 +64,7 @@ const DP data(DP::load(argv[2]));
 
 The `ICP` class represents the ICP chain shown in [Figure 1](#icp_chain_diagram).  We create an object instantiation of an ICP chain and apply the default settings using `setDefault`.  A view of the default ICP chain configuration is shown [here](DefaultICPConfig.md).
 
+=== "C++"
 ```cpp
 // Create the default ICP algorithm
 PM::ICP icp;
@@ -74,6 +75,7 @@ icp.setDefault();
 
 The entire registration process is performed by applying the functor `TransformationParameters ICP(DataPoints ref, DataPoints data)`.  The optimal transformation is stored in a TransformationParameters object.
 
+=== "C++"
 ```cpp
 // Compute the transformation to express data in ref
 PM::TransformationParameters T = icp(data, ref);
@@ -81,6 +83,7 @@ PM::TransformationParameters T = icp(data, ref);
 
 We can then apply the obtained transformation to the reading cloud so that it is aligned with the reference.  First we create a new `DataPoints` object to store the aligned reading cloud and then use the `apply(DataPoints out, TransformationParameters param)` to apply the alignment.
 
+=== "C++"
 ```cpp
 // Transform data to express it in ref
 DP data_out(data);
@@ -89,6 +92,7 @@ icp.transformations.apply(data_out, T);
 
 In the final step, we save the reference, reading, and aligned reading point clouds to the `examples/` directory.  Note that the files are saved as .vtk files instead of .csv files so that they can be visualized with [ParaView](http://www.paraview.org/).  In the final line, we display the transformation parameters in the console using the `<<` operator on the `TransformationParameters` object.
 
+=== "C++"
 ```cpp
 // Save files to see the results
 ref.save("test_ref.vtk");

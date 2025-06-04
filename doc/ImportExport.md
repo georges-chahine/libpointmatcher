@@ -1,6 +1,3 @@
-| [Tutorials Home](index.md) | [Previous](Configuration.md) | [Next](LinkingProjects.md) |
-| :--- | :---: | ---: |
-
 # Importing and Exporting Point Clouds
 
 ## Overview
@@ -9,12 +6,12 @@ There exists a myriad of [graphics file formats](http://en.wikipedia.org/wiki/Ca
 
 ## Table of Supported File Formats
 
-| File Type | Extension | Versions Supported | Descriptors Supported | Additional Information |
-| --------- |:---------:|:------------------:|:---------------------:|---------|
-| Comma Separated Values | .csv | NA | yes (see [table of descriptor labels](#descmaptable)) | |
-| Visualization Toolkit Files | .vtk | Legacy format versions 3.0 and lower (ASCII only) | yes | Only polydata and unstructured grid VTK Datatypes supported.  More information can be found  [here](http://www.vtk.org/VTK/img/file-formats.pdf).|
-| Polygon File Format | .ply | 1.0 (ASCII only) | yes (see [table of descriptor labels](#descmaptable)) | | 
-| Point Cloud Library Format | .pcd | 0.7 (ASCII only) | yes (see [table of descriptor labels](#descmaptable)) | |
+| File Type | Extension |                Versions Supported                 | Descriptors Supported | Additional Information                                                                                                                            |
+| --------- |:---------:|:-------------------------------------------------:|:---------------------:|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| Comma Separated Values | .csv |                        NA                         | yes (see [table of descriptor labels](#descmaptable)) |                                                                                                                                                   |
+| Visualization Toolkit Files | .vtk | Legacy format versions 3.0 and lower (ASCII only) | yes | Only polydata and unstructured grid VTK Datatypes supported.  More information can be found  [here](http://www.vtk.org/VTK/img/file-formats.pdf). |
+| Polygon File Format | .ply |              1.0 (ASCII and binary)               | yes (see [table of descriptor labels](#descmaptable)) | Users are encouraged to execute `libpointmatcher` using `double` as the floating precision format to prevent overflows.                           | 
+| Point Cloud Library Format | .pcd |                 0.7 (ASCII only)                  | yes (see [table of descriptor labels](#descmaptable)) |                                                                                                                                                   |
 
 ## Comma Separated Values (CSV) Files
 
@@ -104,7 +101,7 @@ While most files should contain data structured in a natural order ie ("x", "y" 
 ---
 ### Note For libpointmatcher Developers
 
-The association between descriptor properties identifiers and libpointmatcher descriptor labels is set in the `getDescAssocationMap` function in [pointmatcher/IO.cpp](https://github.com/ethz-asl/libpointmatcher/blob/master/pointmatcher/IO.cpp).  To extend IO support to additional descriptors, you can modify this function.
+The association between descriptor properties identifiers and libpointmatcher descriptor labels is set in the `getDescAssocationMap` function in [pointmatcher/IO.cpp](https://github.com/norlab-ulaval/libpointmatcher/blob/master/pointmatcher/IO.cpp).  To extend IO support to additional descriptors, you can modify this function.
 
 The `getDescAssocationMap` returns a map which associates a property identifier and a pair consisting of a row number and a point matcher descriptor name.  For example, the descriptor identifier *nx* maps to row 0 of the *normals* libpointmatcher descriptor. Ie:
 
@@ -112,4 +109,4 @@ The `getDescAssocationMap` returns a map which associates a property identifier 
 "ny" -> (1, "normals") <br>
 "nz" -> (2, "normals")
 
-For converting libpointmatcher descriptors back to a property identifier, you must modify the  `getColLabel` function in [pointmatcher/IO.cpp](https://github.com/ethz-asl/libpointmatcher/blob/master/pointmatcher/IO.cpp).
+For converting libpointmatcher descriptors back to a property identifier, you must modify the  `getColLabel` function in [pointmatcher/IO.cpp](https://github.com/norlab-ulaval/libpointmatcher/blob/master/pointmatcher/IO.cpp).
